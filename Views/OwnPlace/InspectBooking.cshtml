@@ -1,0 +1,46 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.Entities.Booking
+
+<div class="text-center">
+    <h1 class="display-4">Inspect Booking</h1>
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="BookingId" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time Start</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="DateStart" readonly/>
+        <span asp-validation-for="DateStart" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time End</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="DateEnd" readonly/>
+        <span asp-validation-for="DateEnd" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time Booking</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="BookingDate" readonly />
+        <span asp-validation-for="DateEnd" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Total Price $</label>
+        <input type="number" class="form-control" asp-for="Deposit" placeholder="" readonly />
+        <span asp-validation-for="Deposit" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit" asp-route-BookingStatus="Approved">Approved</button>
+        <button class=" btn btn-primary" type="submit" asp-route-BookingStatus="Rejected">Rejected</button>
+        <button class=" btn btn-danger" type="" formmethod="get" asp-area="" asp-controller="OwnPlace" asp-action="ListBooking">Cancel</button>
+    </div>
+</form>

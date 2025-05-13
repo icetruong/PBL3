@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<HoldEvent.Models.Entities.Feedback>
+
+<div class="text-center">
+    <h1 class="display-4" >List Feedback by user</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID User
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Day Send
+                </th>
+                <th>
+                    
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach(var f in Model)
+                {
+                    <tr>
+                        <td>
+                            @f.UserId
+                        </td>
+                        <td>
+                            @f.Title
+                        </td>
+                        <td>
+                            @f.CreateAtDay
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-controller="Admin" asp-action="Support" asp-route-FeedbackID="@f.FeedbackId">Respond</a>
+                        </td>
+                    </tr>
+                }
+            }
+    </tbody>
+    
+</table>
+</div>
+
+

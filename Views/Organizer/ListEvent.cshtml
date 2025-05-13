@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<HoldEvent.Models.Entities.Event>
+
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-primary" asp-area="" asp-controller="Organizer" asp-action="CreateEditEvent">Create Event</a>
+    </div>
+    <div class="col-md-6">
+        <form method="get" asp-action="ListEvent" class="d-flex">
+
+            <div class="mt-3 me-3">
+                <input type="text" name="searchName" class="form-control" placeholder="tìm kiếm theo tên" value="@ViewData["Search"]" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="text-center">
+    <h1 class="display-4">Event</h1>
+</div>
+
+
+<div class="row">
+    @foreach (var c in Model)
+    {
+        <div class="col-md-3 mt-3">
+            <div class="mt-3 text-center">
+                <h2 class="display-6">@c.Name</h2>
+            </div>
+            <div class="mt-3">
+                <p>@c.Description</p>
+            </div>
+            <div class="mt-3">
+                <p>Start Time: @c.StartTime</p>
+            </div>
+            <div class="mt-3">
+                <p>End Time: @c.EndTime</p>
+            </div>
+            <div class="mt-3">
+                <p>Is Public: @c.IsPublic</p>
+            </div>
+
+            <div class="mt-3">
+                <a class=" btn btn-primary" type="" asp-area="" asp-controller="Organizer" asp-action="CreateEditEvent" asp-route-EventID="@c.EventId">Edit</a>
+                <a class=" btn btn-primary" type="" asp-area="" asp-controller="Organizer" asp-action="ViewDetailMyEvent" asp-route-EventID="@c.EventId">View Detail</a>
+                <a class=" btn btn-danger" type="" asp-area="" asp-controller="Organizer" asp-action="DeleteEvent" asp-route-EventID="@c.EventId">Delete</a>
+
+                <span asp-validation-for="@c.Name" class="text-danger"></span>
+            </div>
+        </div>
+    }
+</div>

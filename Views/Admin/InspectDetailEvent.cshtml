@@ -1,0 +1,53 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.Entities.Event
+
+<div class="text-center">
+     <h1 class="display-4">Inspect Event</h1>
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="EventId" />
+    </div>
+    <div class="mt-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" placeholder="" asp-for="Name" readonly/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Decription</label>
+        <textarea class="form-control" rows="5" placeholder="Nhập nội dung chi tiết" asp-for="Description" readonly></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time Start</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="StartTime" readonly/>
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time End</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="EndTime" readonly/>
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Is Public</label>
+        <select class="form-control" asp-for="IsPublic" disabled>
+            <option value="false">Private</option>
+            <option value="true">Public</option>
+        </select>
+    </div>
+
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit" asp-route-EventStatus = "Approved">Approved</button>
+        <button class=" btn btn-primary" type="submit" asp-route-EventStatus="Rejected">Rejected</button>
+        <button class=" btn btn-danger" type="" formmethod="get" asp-area="" asp-controller="Admin" asp-action="ListEvent">Cancel</button>
+    </div>
+</form>

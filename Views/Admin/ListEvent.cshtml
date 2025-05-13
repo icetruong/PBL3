@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model List<HoldEvent.Models.Entities.Event>
+
+<div class="text-center">
+    <h1 class="display-4">Event</h1>
+</div>
+
+
+<div class="row">
+    @foreach (var c in Model)
+    {
+        <div class="col-md-3 mt-3">
+            <div class="mt-3 text-center">
+                <h2 class="display-6">@c.Name</h2>
+            </div>
+            <div class="mt-3">
+                <p>@c.Description</p>
+            </div>
+            <div class="mt-3">
+                <p>Start Time: @c.StartTime</p>
+            </div>
+            <div class="mt-3">
+                <p>End Time: @c.EndTime</p>
+            </div>
+
+            <div class="mt-3">
+                <p>Is Public:  $@c.IsPublic</p>
+            </div>
+
+
+            <div class="mt-3">
+                <a class=" btn btn-primary" type="" asp-area="" asp-controller="Admin" asp-action="InspectDetailEvent" asp-route-EventID="@c.EventId">Inspect Event</a>
+
+                <span asp-validation-for="@c.Name" class="text-danger"></span>
+            </div>
+        </div>
+    }
+</div>

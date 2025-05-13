@@ -1,0 +1,63 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.Entities.Venue
+
+<div class="text-center">
+    @if (@String.IsNullOrEmpty(Model.OwnPlaceId))
+    {
+        <h1 class="display-4">Create Venue</h1>
+    }
+    else
+    {
+        <h1 class="display-4">Edit Venue</h1>
+    }
+
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="VenueId" />
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="OwnPlaceId"/>
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="CommissionId" />
+    </div>
+    <div class="mt-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" placeholder="" asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Decription</label>
+        <textarea class="form-control" rows="5" placeholder="Nhập nội dung chi tiết" asp-for="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Capacity</label>
+        <input type="number" class="form-control" placeholder="" asp-for="Capacity" />
+        <span asp-validation-for="Capacity" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Address</label>
+        <input type="text" class="form-control" placeholder="" asp-for="Address" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Price/day $</label>
+        <input type="number" class="form-control" asp-for="Price" step="0.01" placeholder="Enter Price" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit">OK</button>
+
+        <button class=" btn btn-danger" type="" formmethod="get" asp-area="" asp-controller="OwnPlace" asp-action="ListVenue">Cancel</button>
+    </div>
+</form>

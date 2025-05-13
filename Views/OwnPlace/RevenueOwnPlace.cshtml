@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var type = ViewData["Type"]?.ToString();
+    if(type == null)
+    {
+        type = "total";
+    }
+}
+@model List<RevenueReportVenueViewModel>
+
+<h2 class="text-center">Revenue Report</h2>
+
+<form method="get" class="row g-3">
+    <div class="col-md-4">
+        <label>Chọn loại thống kê</label>
+        <select name="type" class="form-select" onchange="this.form.submit()">
+            <option value="total" selected="@(type == "total")">Tổng doanh thu</option>
+            <option value="date" selected="@(type == "date")">Theo ngày</option>
+            <option value="month" selected="@(type == "month")">Theo tháng</option>
+            <option value="venue" selected="@(type == "venue")">Theo địa điểm</option>
+        </select>
+    </div>
+
+    @if (type == "date")
+    {
+        <div class="col-md-4">
+            <label>Chọn ngày</label>
+            <input type="date" name="date" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">OK</button>
+        </div>
+    }
+    else if (type == "month")
+    {
+        <div class="col-md-4">
+            <label>Chọn tháng (1-12)</label>
+            <input type="number" name="month" class="form-control" min="1" max="12" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">OK</button>
+        </div>
+    }
+</form>
+<hr />
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table table-bordered mt-4">
+        <thead class="table-light">
+            <tr>
+                @if (type == "venue")
+                {
+                    <th>Tên địa điểm</th>
+                }
+                <th>Số lượt đặt</th>
+                <th>Tổng doanh thu ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @if (type == "venue")
+                    {
+                        <td>@item.VenueName</td>
+                    }
+                    <td>@item.BookingCount</td>
+                    <td>@item.TotalRevenue.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>  
+}
+
+<h5 class="text-end mt-3">
+    <b>Tổng doanh thu:</b> $@ViewData["TotalOverallRevenue"]
+</h5>
+
+<h5 class="text-end mt-3">
+    <b>Tổng tiền thu được:</b> $@ViewData["TotalNetOverallRevenue"]
+</h5>

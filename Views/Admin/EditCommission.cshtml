@@ -1,0 +1,46 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.Entities.Commission
+
+<div class="text-center">
+    @if(@Model.CommissionType == 1)
+    {
+        <h1 class="display-4">Ticket Commission</h1>
+    }
+    else
+    {
+        <h1 class="display-4">Venue Commission</h1>
+    }
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="CommissionId" readonly />
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="CommissionType" readonly />
+    </div>
+    <div class="mt-3">
+        <label class="form-label"> Percentage</label>
+        <div class="input-group">
+            <input type="number" class="form-control" asp-for="Percentage" step="0.01" placeholder="Enter Percentage" />
+            <div class="input-group-append">
+                <span class="input-group-text">%</span>
+            </div>
+        </div>
+        <span asp-validation-for="Percentage" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <input hidden type="datetime-local" class="form-control" placeholder="" asp-for="CreateAtDay" readonly />
+    </div>
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit">OK</button>
+        <button class=" btn btn-danger" type="" formmethod="get" asp-area="" asp-controller="Admin" asp-action="ListSupport">Cancel</button>
+    </div>
+</form>
+
+

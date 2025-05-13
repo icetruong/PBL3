@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+ @model List<HoldEvent.Models.TicketUserViewModel>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="get" asp-controller="User" asp-action="MyTicket" class="d-flex">
+            <div class="mt-3 me-3">
+                <input type="text" name="searchName" class="form-control" placeholder="tìm kiếm theo tên sự kiện" value="@ViewData["Search"]" />
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="text-center">
+    <h1 class="display-4">My Ticket</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    EventName
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Ticket Type
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Adress
+                </th>
+                <th>
+                    Start Time Event
+                </th>
+                <th>
+                    End Time Event
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var t in Model)
+                {
+                    <tr>
+                        <td>
+                            @t.NameEvent
+                        </td>
+                        <td>
+                            @t.Price
+                        </td>
+                        <td>
+                            @t.TicketType
+                        </td>
+                        <td>
+                            @t.Quantity
+                        </td>
+                        <td>
+                            @t.NameVenue
+                        </td>
+                        <td>
+                            @t.Address
+                        </td>
+                        <td>
+                            @t.StartTime
+                        </td>
+                        <td>
+                            @t.EndTime
+                        </td>
+                        <td>
+                            @t.Status
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+

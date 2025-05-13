@@ -1,0 +1,48 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.FeedbackSupportViewModel
+
+<div class="text-center">
+    <h1 class="display-4" asp-for="Title"></h1>
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="UserId" readonly />
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="FeedbackId" readonly />
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="AdminId" readonly />
+    </div>
+    <div class="mt-3">
+        <input type="hidden" class="form-control" placeholder="" asp-for="SupportId" readonly />
+    </div>
+    <div class="mt-3">
+        <label class="form-label"> Content Feedback</label>
+        <textarea class="form-control" rows="5" placeholder="" asp-for="ContentFeedback" readonly></textarea>
+    </div>
+    <div class="mt-3">
+        <label class="form-label"> Day Feedback</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="CreateAtDayFeedback" readonly />
+    </div>
+    <div class="mt-3">
+        <label class="form-label"> Content Support</label>
+        <textarea class="form-control" rows="5" placeholder="" asp-for="ContentSupport"></textarea>
+        <span asp-validation-for="ContentSupport" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <input hidden type="datetime-local" class="form-control" placeholder="" asp-for="CreateAtDaySupport" readonly />
+    </div>
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit">OK</button>
+        <button class=" btn btn-danger" type="" formmethod="get" asp-area="" asp-controller="Admin" asp-action="ListSupport">Cancel</button>
+    </div>
+</form>
+
+

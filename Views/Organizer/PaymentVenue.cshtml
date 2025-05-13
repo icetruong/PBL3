@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.VenueBookingViewModel
+
+<div class="text-center">
+    <h1 class="display-4">Payment</h1>
+</div>
+
+<form method="post">
+    <div class="mt-3">
+        <label class="form-label">Name venue</label>
+        <input type="text" class="form-control" placeholder="User Name" asp-for="Name" readonly/>
+
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Price</label>
+        <input type="number" class="form-control" placeholder="" step="0.01" asp-for="Deposit" readonly />
+
+        <span asp-validation-for="Deposit" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <input hidden type="datetime-local" class="form-control" placeholder="" asp-for="DateStart" />
+    </div>
+
+    <div class="mt-3">
+        <input hidden type="datetime-local" class="form-control" placeholder="" asp-for="DateEnd" />
+    </div>
+
+    @if(Model.PaymentId == null)
+    {
+        <div class="mt-3">
+            <label class="form-label">Method banking</label>
+            <select class="form-control" asp-for="Method">
+                <option value="1">Banking by number</option>
+                <option value="2">Banking by qr code</option>
+            </select>
+        </div>
+    }
+    else
+    {
+        <div class="mt-3">
+            <label class="form-label">Nhập Price</label>
+            <input type="number" class="form-control" placeholder="" step="0.01" asp-for="PricePayment" />
+
+            <span asp-validation-for="PricePayment" class="text-danger"></span>
+        </div>
+    }
+
+
+
+    <div class="mt-3">
+        <button class=" btn btn-primary" type="submit">OK</button>
+
+        <button class=" btn btn-danger" asp-area="" asp-controller="Organizer" asp-action="ListVenue">Cancel</button>
+    </div>
+</form>
+

@@ -1,0 +1,89 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model HoldEvent.Models.EventTicketOrganizerVenueViewModel
+
+
+
+<div>
+    <div class="text-center">
+        <h1 class="display-4">Event @Model.NameEvent</h1>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Decription</label>
+        <textarea class="form-control" rows="5" placeholder="Nhập nội dung chi tiết" asp-for="Description" readonly></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time Start</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="StartTime" readonly />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label"> Day - Time End</label>
+        <input type="datetime-local" class="form-control" placeholder="" asp-for="EndTime" readonly />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+</div>
+
+<div>
+    <div class="text-center">
+        <h1 class="display-4">Ticket</h1>
+    </div>
+    @foreach(var t in Model.tickets)
+    {
+        <div class="mt-3">
+            <label class="form-label"> Ticket Type </label>
+            <select class="form-control" >
+                <option selected="@(t.TicketType == 1)">Standard</option>
+                <option selected="@(t.TicketType == 2)"> Vip</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label">Price</label>
+            <input type="number" class="form-control" placeholder="" step="0.01" value="@t.Price" readonly/>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label">Remain Quantity</label>
+            <input type="number" class="form-control" placeholder="" value="@(t.TotalQuantity - t.SoldQuantity)" readonly/>
+        </div>
+    }
+</div>
+
+<div>
+    <div class="text-center">
+        <h1 class="display-4">Venue @Model.NameVenue</h1>
+    </div>
+
+    <div class="mt-3">
+        <h6>Description: </h6>
+        <p>@Model.DescriptionVenue</p>
+    </div>
+
+    <div class="mt-3">
+        <p>Address: @Model.Address</p>
+    </div>
+</div>
+
+<div>
+    <div class="text-center">
+        <h1 class="display-4">Organizer @Model.NameOrganizer</h1>
+    </div>
+
+    <div class="mt-3">
+        <ps>Email: @Model.Email</p>
+        <p>NumberPhone: @Model.PhoneNumber</p>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a class=" btn btn-primary" type="" asp-area="" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@Model.EventId">BookTicket</a>
+    <a class=" btn btn-secondary" type="" asp-area="" asp-controller="Home" asp-action="Index" >Cancel</a>
+</div>

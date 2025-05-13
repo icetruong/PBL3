@@ -1,0 +1,81 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+ @model List<HoldEvent.Models.Entities.User>
+
+<form method="get" asp-controller="Admin" asp-action="ListUser" class="d-flex">
+    <div class="mt-3 me-3">
+        <input type="text" name="searchName" class="form-control" placeholder="tìm kiếm theo tên" value="@ViewData["Search"]" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="text-center">
+    <h1 class="display-4">List User</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    FullName
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Role
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var f in Model)
+                {
+                    <tr>
+                        <td>
+                            @f.FullName
+                        </td>
+                        <td>
+                            @f.Email
+                        </td>
+                        <td>
+                            @f.PhoneNumber
+                        </td>
+                        @if(@f.Gender == true)
+                        {
+                            <td>
+                                Nam
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Nữ
+                            </td>
+                        }
+                        <td>
+                            @f.Role
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" asp-area="" asp-controller="Admin" asp-action="EditRole" asp-route-UserID="@f.UserId">View detail and edit Role</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+

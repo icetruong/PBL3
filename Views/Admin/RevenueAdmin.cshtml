@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var typeTime = ViewData["TypeTime"]?.ToString();
+    var typeSource = ViewData["TypeSource"]?.ToString();
+}
+@model List<RevenueReportAdminViewModel>
+
+<h2 class="text-center">Revenue Report</h2>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <label>Loại thời gian</label>
+        <select name="typeTime" class="form-select" onchange="this.form.submit()">
+            <option value="total" selected="@("total" == typeTime)">-- Tổng --</option>
+            <option value="date" selected="@("date" == typeTime)">Theo ngày</option>
+            <option value="month" selected="@("month" == typeTime)">Theo tháng</option>
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <label>Loại nguồn thu</label>
+        <select name="typeSource" class="form-select" onchange="this.form.submit()">
+            <option value="all" selected="@("all" == typeSource)">Tất cả</option>
+            <option value="venue" selected="@("venue" == typeSource)">Địa điểm</option>
+            <option value="event" selected="@("event" == typeSource)">Sự kiện</option>
+        </select>
+    </div>
+
+    @if (typeTime == "date")
+    {
+        <div class="col-md-4">
+            <label>Chọn ngày</label>
+            <input type="date" name="date" class="form-control" />
+            <div class="d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    }
+    else if (typeTime == "month")
+    {
+        <div class="col-md-4">
+            <label>Chọn tháng (1-12)</label>
+            <input type="number" name="month" class="form-control" min="1" max="12" />
+            <div class="d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    }
+</form>
+
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Nguồn thu</th>
+            <th>Loại</th>
+            <th>% Hoa hồng</th>
+            <th>Tổng tiền</th>
+            <th>Hệ thống hưởng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model != null)
+        {
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.SourceName</td>
+                    <td>@r.Type</td>
+                    <td>@r.CommissionPercent%</td>
+                    <td>@r.TotalRevenue.ToString("N2") $</td>
+                    <td>@r.CommissionEarned.ToString("N2") $</td>
+                </tr>
+            }    
+        }
+    </tbody>
+</table>
+
+<h5 class="text-end"><b>Tổng hoa hồng hệ thống nhận được:</b> @ViewData["TotalCommission"] $</h5>

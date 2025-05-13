@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+ @model List<HoldEvent.Models.Entities.Booking>
+
+
+
+<div class="text-center">
+    <h1 class="display-4">List Booking</h1>
+    <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    VenueName
+                </th>
+                <th>
+                    Date Start 
+                </th>
+                <th>
+                    Date End
+                </th>
+                <th>
+                    Booking Day
+                </th>
+                <th>
+                    Deposit
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var f in Model)
+                {
+                    <tr>
+                        <td>
+                            @f.Venue.Name
+                        </td>
+                        <td>
+                            @f.DateStart
+                        </td>
+                        <td>
+                            @f.DateEnd
+                        </td>
+                        <td>
+                            @f.BookingDate
+                        </td>
+                        <td>
+                            @f.Deposit
+                        </td>
+                        @if(f.BookingStatus == -1)
+                        {
+                            <td>
+                                <a class="btn btn-primary" asp-area="" asp-controller="OwnPlace" asp-action="InspectBooking" asp-route-BookingID="@f.BookingId">Inspect</a>
+                            </td>
+                        }
+                        else
+                            @if(f.BookingStatus == 0)
+                            {
+                                <td>
+                                    Rejected
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    Approved
+                                </td>
+                            }
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
