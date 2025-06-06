@@ -5,48 +5,43 @@
 @model List<HoldEvent.Models.Entities.Feedback>
 
 <div class="text-center">
-    <h1 class="display-4" >List Feedback by user</h1>
+    <h1 class="display-4" style="font-weight:700">List Feedback by user</h1>
     <br />
-    <table class="table">
-        <thead>
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light text-center">
             <tr>
-                <th>
-                    ID User
-                </th>
-                <th>
-                    Title
-                </th>
-                <th>
-                    Day Send
-                </th>
-                <th>
-                    
-                </th>
+                <th scope="col">ID User</th>
+                <th scope="col">Title</th>
+                <th scope="col">Day Send</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
-            @{
-                foreach(var f in Model)
+            @if (Model != null && Model.Any())
+            {
+                foreach (var f in Model)
                 {
                     <tr>
-                        <td>
-                            @f.UserId
-                        </td>
-                        <td>
-                            @f.Title
-                        </td>
-                        <td>
-                            @f.CreateAtDay
-                        </td>
-                        <td>
-                            <a class="btn btn-primary" asp-controller="Admin" asp-action="Support" asp-route-FeedbackID="@f.FeedbackId">Respond</a>
+                        <td class="text-center">@f.UserId</td>
+                        <td>@f.Title</td>
+                        <td class="text-center">@f.CreateAtDay?.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">
+                            <a class="btn btn-primary btn-sm" asp-controller="Admin" asp-action="Support" asp-route-FeedbackID="@f.FeedbackId">
+                                Respond
+                            </a>
                         </td>
                     </tr>
                 }
             }
-    </tbody>
-    
-</table>
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No feedback available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 </div>
 
 

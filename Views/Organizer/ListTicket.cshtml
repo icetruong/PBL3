@@ -4,46 +4,27 @@
 
  @model List<HoldEvent.Models.ListTicketViewModel>
 
-<div class="row">
-    <div class="col-md-6">
-        <a class="btn btn-primary" asp-area="" asp-controller="Organizer" asp-action="CreateEditTicket">Create Ticket</a>
-    </div>
-    <div class="col-md-6">
-        <form method="get" asp-controller="Organizer" asp-action="ListTicket" class="d-flex">
-            <div class="mt-3 me-3">
-                <input type="text" name="searchName" class="form-control" placeholder="tìm kiếm theo tên" value="@ViewData["Search"]" />
+<div class="text-center">
+    <h1 class="display-4" style="font-weight:700">List Ticket</h1>
+    <div class="d-flex justify-content-center align-items-center mt-2">
+        <a class="btn btn-primary me-3" asp-area="" asp-controller="Organizer" asp-action="CreateEditTicket">Create Ticket</a>
+        <form method="get" asp-controller="Organizer" asp-action="ListTicket" class="d-flex justify-content-center align-items-center ">
+            <div class="me-2">
+                <input type="text" name="searchName" class="form-control" placeholder="Tìm kiếm theo tên" value="@ViewData["Search"]" />
             </div>
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
-</div>
-
-
-
-<div class="text-center">
-    <h1 class="display-4">List Ticket</h1>
     <br />
-    <table class="table">
-        <thead>
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-primary">
             <tr>
-                <th>
-                    EventName
-                </th>
-                <th>
-                    Type Ticket
-                </th>
-                <th>
-                    Price
-                </th>
-                <th>
-                    Total Quantity
-                </th>
-                <th>
-                    Sold Quantity
-                </th>
-                <th>
-                    
-                </th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Ticket Type</th>
+                <th scope="col" class="text-end">Price</th>
+                <th scope="col" class="text-center">Total Quantity</th>
+                <th scope="col" class="text-center">Sold Quantity</th>
+                <th scope="col" class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -51,31 +32,21 @@
                 foreach (var f in Model)
                 {
                     <tr>
-                        <td>
-                            @f.Name
-                        </td>
-                        <td>
-                            @f.TicketType
-                        </td>
-                        <td>
-                            @f.Price
-                        </td>
-                        <td>
-                            @f.TotalQuantity
-                        </td>
-                        <td>
-                            @f.SoldQuantity
-                        </td>
-                        <td>
-                            <a class="btn btn-primary" asp-area="" asp-controller="Organizer" asp-action="CreateEditTicket" asp-route-TicketID="@f.TicketId">Edit</a>
-                            <a class="btn btn-danger" asp-area="" asp-controller="Organizer" asp-action="DeleteTicket" asp-route-TicketID="@f.TicketId">Delete</a>
+                        <td>@f.Name</td>
+                        <td>@f.TicketType</td>
+                        <td class="text-end">@String.Format("{0:N0} đ", f.Price)</td>
+                        <td class="text-center">@f.TotalQuantity</td>
+                        <td class="text-center">@f.SoldQuantity</td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-primary me-1" asp-area="" asp-controller="Organizer" asp-action="CreateEditTicket" asp-route-TicketID="@f.TicketId">Edit</a>
+                            <a class="btn btn-sm btn-danger" asp-area="" asp-controller="Organizer" asp-action="DeleteTicket" asp-route-TicketID="@f.TicketId" onclick="return confirm('Are you sure you want to delete this ticket?');">Delete</a>
                         </td>
                     </tr>
                 }
             }
         </tbody>
-
     </table>
+
 </div>
 
 

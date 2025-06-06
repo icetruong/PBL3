@@ -339,6 +339,17 @@ namespace HoldEvent.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteEvent(String EventID)
+        {
+            var Event = await _DbContext.Events.SingleOrDefaultAsync(e => e.EventId == EventID);
+
+            _DbContext.Events.Remove(Event);
+            await _DbContext.SaveChangesAsync();
+
+            return RedirectToAction("ListEvent", "Organizer");
+        }
+
         [HttpGet]
         public async Task<IActionResult> ListTicket(String? searchName)
         {

@@ -8,7 +8,7 @@
 }
 @model List<RevenueReportEventViewModel>
 
-<h2 class="text-center">Revenue Report</h2>
+<h2 class="text-center" style="font-weight:700">Revenue Report</h2>
 
 <form method="get" class="row g-3">
     <div class="col-md-4">
@@ -47,30 +47,31 @@
 @if (Model != null && Model.Count > 0)
 {
     <table class="table table-bordered mt-4">
-        <thead class="table-light">
+        <thead class="table-secondary text-center">
             <tr>
                 @if (type == "event")
                 {
-                    <th>Tên sự kiện</th>
+                    <th scope="col">Tên sự kiện</th>
                 }
-                <th>Số lượng vé bán được</th>
-                <th>Tổng doanh thu ($)</th>
+                <th scope="col">Số lượng vé bán được</th>
+                <th scope="col">Tổng doanh thu (₫)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                <tr class="text-center">
                     @if (type == "event")
                     {
-                        <td>@item.EventName</td>
+                        <td class="text-start">@item.EventName</td>
                     }
                     <td>@item.SoldQuantity</td>
-                    <td>@item.TotalRevenue.ToString("N2")</td>
+                    <td>@String.Format("{0:N0}", item.TotalRevenue) đ</td>
                 </tr>
             }
         </tbody>
     </table>
+
 }
 
 <h5 class="text-end mt-3">

@@ -139,3 +139,4 @@ C:\Users\PC\source\HoldEvent\HoldEvent\obj\Debug\net8.0\HoldEvent.csproj.Assembl
 C:\Users\PC\source\HoldEvent\HoldEvent\obj\Debug\net8.0\HoldEvent.csproj.Up2Date
 C:\Users\PC\source\HoldEvent\HoldEvent\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\PC\source\HoldEvent\HoldEvent\bin\Debug\net8.0\BCrypt.Net.dll
+C:\Users\PC\source\HoldEvent\HoldEvent\obj\Debug\net8.0\HoldEvent.sourcelink.json

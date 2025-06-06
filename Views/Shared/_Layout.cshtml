@@ -6,115 +6,251 @@
     <title>@ViewData["Title"] - HoldEvent</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HoldEvent.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/HoldEvent.styles.css" asp-append-version="true" /> *@
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 400; /* Mặc định bình thường */
+            line-height: 1.6;
+            color: #222;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+        }
+
+        /* Ví dụ dùng các mức độ font khác nhau trong nội dung */
+        .font-thin {
+            font-weight: 100;
+        }
+
+        .font-extralight {
+            font-weight: 200;
+        }
+
+        .font-light {
+            font-weight: 300;
+        }
+
+        .font-normal {
+            font-weight: 400;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .font-extrabold {
+            font-weight: 800;
+        }
+
+        .font-black {
+            font-weight: 900;
+        }
+    </style>
+
 </head>
 
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+<body class="d-flex flex-column" style="min-height: 100vh;">
+    <header style="display: flex; flex-direction: column;">
+        <div style="display: flex; flex-direction: column; background-color:#0d6efd; color:white; width:100%; padding:20px;">
+            <span style="font-weight:800; font-size:20px;">PBL3</span>
+            <span>Hệ thống bán vé và đặt chỗ sự kiện tại Đà Nẵng</span>
+        </div>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm  bg-white border-bottom box-shadow mb-3" style="padding:5px; display: flex; flex-direction: column; background-color:#084298 !important; color:white !important;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HoldEvent</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color:white !important;">HoldEvent</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1" style="color:white !important;">
                         @{
                             var Role = ViewData["Role"] as string;
                         }
                         @if (Role == "Admin")
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="IndexAdmin">Home</a>
+                            <li class="nav-item" style="color:white !important;">
+                                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="IndexAdmin" style="color:white !important;">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ViewCommission">Đặt phí hoa hồng</a>
+                                <a class="nav-link " asp-area="" asp-controller="Admin" asp-action="ViewCommission" style="color:white !important;">Đặt phí hoa hồng</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListUser">Người dùng</a>
+                                <a class="nav-link " asp-area="" asp-controller="Admin" asp-action="ListUser" style="color:white !important;">Người dùng</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListEvent">Duyệt sự kiện</a>
+                                <a class="nav-link " asp-area="" asp-controller="Admin" asp-action="ListEvent" style="color:white !important;">Duyệt sự kiện</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="RevenueAdmin">Doanh thu</a>
+                                <a class="nav-link " asp-area="" asp-controller="Admin" asp-action="RevenueAdmin" style="color:white !important;">Doanh thu</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListSupport">Hỗ trợ</a>
+                                <a class="nav-link " asp-area="" asp-controller="Admin" asp-action="ListSupport" style="color:white !important;">Hỗ trợ</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
-                            </li>
+                            @* <li class="nav-item"> *@
+                            @*     <a class="nav-link " asp-area="" asp-controller="Account" asp-action="Logout" style="color:white !important;">Đăng xuất</a> *@
+                            @* </li> *@
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link " asp-area="" asp-controller="Home" asp-action="Index" style="color:white !important;">Home</a>
                             </li>
                             @if (String.IsNullOrWhiteSpace(Role))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a>
-                                </li>
+                                @* <li class="nav-item"> *@
+                                @*     <a class="nav-link " asp-area="" asp-controller="Account" asp-action="Login" style="color:white !important;">Sign in</a> *@
+                                @* </li> *@
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="UserInformation">Xem thông tin cá nhân</a>
+                                    <a class="nav-link " asp-area="" asp-controller="User" asp-action="UserInformation" style="color:white !important;">Xem thông tin cá nhân</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Myticket">Xem vé đã mua</a>
+                                    <a class="nav-link " asp-area="" asp-controller="User" asp-action="Myticket" style="color:white !important;">Xem vé đã mua</a>
                                 </li>
                                 @if (Role == "Organizer")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Organizer" asp-action="ListVenue">Đặt Địa Điểm</a>
+                                        <a class="nav-link " asp-area="" asp-controller="Organizer" asp-action="ListVenue" style="color:white !important;">Đặt Địa Điểm</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Organizer" asp-action="ListEvent">Xem Sự Kiện của mình</a>
+                                        <a class="nav-link " asp-area="" asp-controller="Organizer" asp-action="ListEvent" style="color:white !important;">Xem Sự Kiện của mình</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Organizer" asp-action="ListTicket">Xem vé của sự kiện</a>
+                                        <a class="nav-link " asp-area="" asp-controller="Organizer" asp-action="ListTicket" style="color:white !important;">Xem vé của sự kiện</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Organizer" asp-action="RevenueOrganizer">Doanh thu</a>
+                                        <a class="nav-link " asp-area="" asp-controller="Organizer" asp-action="RevenueOrganizer" style="color:white !important;">Doanh thu</a>
                                     </li>
                                 }
                                 @if (Role == "OwnPlace")
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="OwnPlace" asp-action="ListVenue">Địa điểm</a>
+                                        <a class="nav-link " asp-area="" asp-controller="OwnPlace" asp-action="ListVenue" style="color:white !important;">Địa điểm</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="OwnPlace" asp-action="ListBooking">Duyệt địa điểm</a>
+                                        <a class="nav-link " asp-area="" asp-controller="OwnPlace" asp-action="ListBooking" style="color:white !important;">Duyệt địa điểm</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="OwnPlace" asp-action="RevenueOwnPlace">Doanh thu</a>
+                                        <a class="nav-link " asp-area="" asp-controller="OwnPlace" asp-action="RevenueOwnPlace" style="color:white !important;">Doanh thu</a>
                                     </li>
                                 }
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListFeedback">Đánh giá ứng dụng</a>
+                                    <a class="nav-link " asp-area="" asp-controller="User" asp-action="ListFeedback" style="color:white !important;">Đánh giá ứng dụng</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
-                                </li>
+                                @* <li class="nav-item"> *@
+                                @*     <a class="nav-link " asp-area="" asp-controller="Account" asp-action="Logout" style="color:white !important;">Đăng xuất</a> *@
+                                @* </li> *@
                             }
                         }
-                        
+
                     </ul>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        @if (Role == "Admin")
+                        {
+                            <svg width="28" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>logout</title><path d="M21.71,11.3,19.46,9.05A1,1,0,0,0,18,10.46l.54.54H16.42V6a4,4,0,0,0-4-4H6A4,4,0,0,0,2,6V18a4,4,0,0,0,4,4h6.42a4,4,0,0,0,4-4V13h2.18l-.54.54a1,1,0,1,0,1.41,1.41l2.23-2.23A1,1,0,0,0,21.71,11.3ZM14.42,18a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V6A2,2,0,0,1,6,4h6.42a2,2,0,0,1,2,2v5H10.16a1,1,0,0,0,0,2h4.26Z" id="id_101" style="fill: rgb(255, 255, 255);"></path></svg>
+                            <div style="display: flex; align-items: center; justify-content: center; margin-left:4px; color:white !important;">
+                                <a asp-area="" asp-controller="Account" asp-action="Logout" style="color:white !important;">Log out</a>
+                            </div>
+                        }
+                        else
+                        {
+                            @if (String.IsNullOrWhiteSpace(Role))
+                            {
+                                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="" viewBox="0 0 438.529 438.529" style="enable-background:new 0 0 438.529 438.529;" xml:space="preserve">
+                                <g>
+                                <g>
+                                <path d="M219.265,219.267c30.271,0,56.108-10.71,77.518-32.121c21.412-21.411,32.12-47.248,32.12-77.515
+			                        c0-30.262-10.708-56.1-32.12-77.516C275.366,10.705,249.528,0,219.265,0S163.16,10.705,141.75,32.115
+			                        c-21.414,21.416-32.121,47.253-32.121,77.516c0,30.267,10.707,56.104,32.121,77.515
+			                        C163.166,208.557,189.001,219.267,219.265,219.267z" id="id_101" style="fill: rgb(255, 255, 255);"></path>
+                                <path d="M419.258,335.036c-0.668-9.609-2.002-19.985-3.997-31.121c-1.999-11.136-4.524-21.457-7.57-30.978
+			                        c-3.046-9.514-7.139-18.794-12.278-27.836c-5.137-9.041-11.037-16.748-17.703-23.127c-6.666-6.377-14.801-11.465-24.406-15.271
+			                        c-9.617-3.805-20.229-5.711-31.84-5.711c-1.711,0-5.709,2.046-11.991,6.139c-6.276,4.093-13.367,8.662-21.266,13.708
+			                        c-7.898,5.037-18.182,9.609-30.834,13.695c-12.658,4.093-25.361,6.14-38.118,6.14c-12.752,0-25.456-2.047-38.112-6.14
+			                        c-12.655-4.086-22.936-8.658-30.835-13.695c-7.898-5.046-14.987-9.614-21.267-13.708c-6.283-4.093-10.278-6.139-11.991-6.139
+			                        c-11.61,0-22.222,1.906-31.833,5.711c-9.613,3.806-17.749,8.898-24.412,15.271c-6.661,6.379-12.562,14.086-17.699,23.127
+			                        c-5.137,9.042-9.229,18.326-12.275,27.836c-3.045,9.521-5.568,19.842-7.566,30.978c-2,11.136-3.332,21.505-3.999,31.121
+			                        c-0.666,9.616-0.998,19.466-0.998,29.554c0,22.836,6.949,40.875,20.842,54.104c13.896,13.224,32.36,19.835,55.39,19.835h249.533
+			                        c23.028,0,41.49-6.611,55.388-19.835c13.901-13.229,20.845-31.265,20.845-54.104C420.264,354.502,419.932,344.652,419.258,335.036
+			                        z" id="id_102" style="fill: rgb(255, 255, 255);"></path>
+                                                </g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                <g>
+                                            </g>
+                                            </svg>
+                                <div style="display: flex; align-items: center; justify-content: center; margin-left:6px; color:white !important;">
+                                    <a asp-area="" asp-controller="Account" asp-action="Login" style="color:white !important;">Sign in</a>
+                                    <span style="padding-right:5px; padding-left:5px">/</span>
+                                    <a asp-action="Register" asp-controller="Account" style="color:white !important;">Sign up</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <svg width="28" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>logout</title><path d="M21.71,11.3,19.46,9.05A1,1,0,0,0,18,10.46l.54.54H16.42V6a4,4,0,0,0-4-4H6A4,4,0,0,0,2,6V18a4,4,0,0,0,4,4h6.42a4,4,0,0,0,4-4V13h2.18l-.54.54a1,1,0,1,0,1.41,1.41l2.23-2.23A1,1,0,0,0,21.71,11.3ZM14.42,18a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V6A2,2,0,0,1,6,4h6.42a2,2,0,0,1,2,2v5H10.16a1,1,0,0,0,0,2h4.26Z" id="id_101" style="fill: rgb(255, 255, 255);"></path></svg>
+                                <div style="display: flex; align-items: center; justify-content: center; margin-left:4px; color:white !important;">
+                                    <a asp-area="" asp-controller="Account" asp-action="Logout" style="color:white !important;">Log out</a>
+                                </div>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    @* <main role="main" class="flex-fill " style="height: 100%;"> *@
+    @*     <div class="container pb-3 h-100" style="min-height: 100%;"> *@
+    @*         @RenderBody() *@
+    @*     </div> *@
+    @* </main> *@
+    <main role="main" class="flex-fill d-flex flex-column" style="height: 100%;">
+        <div class="container flex-fill pb-3 h-100 d-flex flex-column" style="min-height: 100% !important;">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted mt-auto" style="background:#cfddf1; display: flex; align-items: center; justify-content: center; height:100px;">
+        <div class="container" style="display: flex; align-items: center; justify-content: center;">
             &copy; 2025 - HoldEvent - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

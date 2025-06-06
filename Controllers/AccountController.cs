@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Html;
+using System;
 namespace HoldEvent.Controllers
 {
     public class AccountController : Controller
@@ -64,14 +65,42 @@ namespace HoldEvent.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult RegisterStep1()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> RegisterStep1(RegisterViewModel model)
         {
+            ModelState.Remove(nameof(model.FullName));
+            ModelState.Remove(nameof(model.Email));
+            ModelState.Remove(nameof(model.PhoneNumber));
+            ModelState.Remove(nameof(model.Address));
+            ModelState.Remove(nameof(model.DayOfBirth));
+            ModelState.Remove(nameof(model.Gender));
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var errorsAccount =await checkVaildAccount(model.UserName, model.Password);
+            foreach(var e in errorsAccount)
+            {
+                ModelState.AddModelError(e.Key, e.Value);
+            }    
+            if(ModelState.IsValid)
+            {
+                return View("RegisterStep2", model);
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterStep2(RegisterViewModel model)
+        {
+            ModelState.Remove(nameof(model.UserName));
+            ModelState.Remove(nameof(model.Password));
+            ModelState.Remove(nameof(model.ConfirmPassword));
             if (!ModelState.IsValid)
                 return View(model);
 
@@ -83,12 +112,7 @@ namespace HoldEvent.Controllers
             if (!UserController.checkDayOfBirth(model.DayOfBirth))
                 ModelState.AddModelError("DayOfBirth", "Day Of Birth khong hop le");
 
-            var errorsAccount =await checkVaildAccount(model.UserName, model.Password);
-            foreach(var e in errorsAccount)
-            {
-                ModelState.AddModelError(e.Key, e.Value);
-            }    
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = new User
                 {
@@ -103,7 +127,7 @@ namespace HoldEvent.Controllers
 
                 var account = new Account
                 {
-                    AccountId =await getVaildIDByAccount(),
+                    AccountId = await getVaildIDByAccount(),
                     UserId = user.UserId,
                     UserName = model.UserName,
                     PasswordHash = HashPassword(model.Password),
@@ -116,7 +140,8 @@ namespace HoldEvent.Controllers
                 return RedirectToAction("Login");
             }
             return View(model);
-        }
+        }   
+        
         [HttpGet]
         public IActionResult ForgetPassword()
         {
@@ -125,6 +150,7 @@ namespace HoldEvent.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgetPassword(RegisterViewModel model)
         {
+
             if (!ModelState.IsValid)
                 return View(model);
             var account = await _DbContext.Accounts.SingleOrDefaultAsync(p => p.UserName == model.UserName);
