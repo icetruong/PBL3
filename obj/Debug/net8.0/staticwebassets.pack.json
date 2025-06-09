@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\PC\\source\\HoldEvent\\HoldEvent\\wwwroot\\images\\avatar-default.png",
+      "PackagePath": "staticwebassets\\images\\avatar-default.png"
+    },
+    {
+      "Id": "C:\\Users\\PC\\source\\HoldEvent\\HoldEvent\\wwwroot\\images\\events-default.jpg",
+      "PackagePath": "staticwebassets\\images\\events-default.jpg"
+    },
+    {
       "Id": "C:\\Users\\PC\\source\\HoldEvent\\HoldEvent\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

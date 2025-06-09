@@ -149,12 +149,9 @@ public partial class Pbl3Context : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("EventID");
-            entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.EndTime).HasColumnType("datetime");
             entity.Property(e => e.IsPublic).HasDefaultValue(true);
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.OrganizerId)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -342,9 +339,7 @@ public partial class Pbl3Context : DbContext
             entity.Property(e => e.Address).HasMaxLength(50);
             entity.Property(e => e.DayOfBirth).HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(50);
-            entity.Property(e => e.FullName)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.FullName).HasMaxLength(50);
             entity.Property(e => e.PhoneNumber).HasMaxLength(10);
             entity.Property(e => e.Role)
                 .HasMaxLength(30)
@@ -360,7 +355,7 @@ public partial class Pbl3Context : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("VenueID");
-            entity.Property(e => e.Address).HasMaxLength(50);
+            entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.CommissionId)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -386,3 +381,4 @@ public partial class Pbl3Context : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+

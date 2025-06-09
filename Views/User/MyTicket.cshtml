@@ -30,6 +30,7 @@
                 <th>Start Time</th>
                 <th>End Time</th>
                 <th>Status</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -39,22 +40,43 @@
                     <tr>
                         <td>@t.NameEvent</td>
                         <td>@t.Price</td>
-                        <td>@t.TicketType</td>
+                        @if(t.TicketType == 1)
+                        {
+                            <td>Vé thường</td>
+                        }
+                        else
+                        {
+                            <td>Vé Vip</td>
+                        }
                         <td>@t.Quantity</td>
                         <td>@t.NameVenue</td>
                         <td>@t.Address</td>
                         <td>@t.StartTime</td>
                         <td>@t.EndTime</td>
-                        <td>
-                            @t.Status
-                        </td>
+                        @if(t.Status == 1)
+                        {
+                            <td>unused</td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary" asp-area="" asp-controller="User" asp-action="UseTicket" asp-route-TicketID="@t.TicketId">
+                                    Use Ticket
+                                </a>
+                            </td>
+                        }
+                        else
+                          if(t.Status == 0)
+                            {
+                                <td>used</td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>Expired</td>
+                                <td></td>                       
+                            }
                     </tr>
                 }
             }
         </tbody>
-    </table>
-
-
     </table>
 </div>
 

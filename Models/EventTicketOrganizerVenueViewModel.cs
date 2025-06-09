@@ -27,5 +27,7 @@ namespace HoldEvent.Models
         public DateTime? EndTime { get; set; }
 
         public List<Ticket> tickets { get; set; }
+
+        public byte[]? Image { get; set; }
     }
 }

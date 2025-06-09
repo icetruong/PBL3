@@ -21,6 +21,8 @@ public partial class User
 
     public string? Role { get; set; }
 
+    public byte[]? Avatar { get; set; }
+
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 
     public virtual ICollection<Admin> Admins { get; set; } = new List<Admin>();

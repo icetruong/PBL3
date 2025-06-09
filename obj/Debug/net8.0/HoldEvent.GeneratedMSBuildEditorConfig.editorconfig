@@ -176,6 +176,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVc2VySW5mb3JtYXRpb25FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/PC/source/HoldEvent/HoldEvent/Views/User/UseTicket.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVc2VUaWNrZXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/PC/source/HoldEvent/HoldEvent/Views/User/ViewDetailEvent.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxWaWV3RGV0YWlsRXZlbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

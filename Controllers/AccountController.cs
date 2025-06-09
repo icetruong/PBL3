@@ -52,6 +52,7 @@ namespace HoldEvent.Controllers
                     HttpContext.Session.SetString("Role", "Organizer");
                 if(user.Role == "OwnPlace")
                     HttpContext.Session.SetString("Role", "OwnPlace");
+                ViewBag.CurrentUser = user;
                 return RedirectToAction("Index", "Home"); 
             }
             return View(model);
@@ -150,9 +151,6 @@ namespace HoldEvent.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgetPassword(RegisterViewModel model)
         {
-
-            if (!ModelState.IsValid)
-                return View(model);
             var account = await _DbContext.Accounts.SingleOrDefaultAsync(p => p.UserName == model.UserName);
             var user = await _DbContext.Users.SingleOrDefaultAsync(p => p.Email == model.Email && p.PhoneNumber == model.PhoneNumber);
             if(account == null)
@@ -171,6 +169,18 @@ namespace HoldEvent.Controllers
                 ModelState.AddModelError("", "ten dang nhap khong khop voi user co email va Phone Number ban ghi");
                 return View();
             }
+
+            if(model.FullName == null)
+            {
+                model.FullName = user.FullName;
+                ModelState.Clear();
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+
             account.PasswordHash = HashPassword(model.Password);
             await _DbContext.SaveChangesAsync();
             return RedirectToAction("Login");

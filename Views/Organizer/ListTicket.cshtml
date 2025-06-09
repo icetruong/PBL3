@@ -34,12 +34,12 @@
                     <tr>
                         <td>@f.Name</td>
                         <td>@f.TicketType</td>
-                        <td class="text-end">@String.Format("{0:N0} đ", f.Price)</td>
+                        <td class="text-end">@String.Format("{0:N0} $", f.Price)</td>
                         <td class="text-center">@f.TotalQuantity</td>
                         <td class="text-center">@f.SoldQuantity</td>
                         <td class="text-center">
                             <a class="btn btn-sm btn-primary me-1" asp-area="" asp-controller="Organizer" asp-action="CreateEditTicket" asp-route-TicketID="@f.TicketId">Edit</a>
-                            <a class="btn btn-sm btn-danger" asp-area="" asp-controller="Organizer" asp-action="DeleteTicket" asp-route-TicketID="@f.TicketId" onclick="return confirm('Are you sure you want to delete this ticket?');">Delete</a>
+                            <a class="btn btn-sm btn-danger" asp-area="" asp-controller="Organizer" asp-action="DeleteTicket" asp-route-TicketID="@f.TicketId";">Delete</a>
                         </td>
                     </tr>
                 }

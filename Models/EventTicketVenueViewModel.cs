@@ -22,6 +22,6 @@ namespace HoldEvent.Models
 
         public decimal? PricePlace { get; set; }
 
-
+        public byte[]? Image { get; set; }
     }
 }

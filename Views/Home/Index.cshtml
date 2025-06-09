@@ -2,30 +2,105 @@
     ViewData["Title"] = "Home Page";
     var UserId = ViewData["UserId"] as string;
     var FullName = ViewData["FullName"] as string;
-}
-
-@if (String.IsNullOrWhiteSpace(UserId))
-{
-    <div class="text-center">
-        <h1 class="display-4" style="font-weight:700">Welcome you</h1>
-    </div>
-}
-else
-{
-    <div class="text-center">
-        <h1 class="display-4" style="font-weight:700">Welcome @FullName</h1>
-    </div>
+    int index = 0;
+    string success = Context.Request.Query["success"].ToString().ToLower();
+    string noTicket = Context.Request.Query["novalue"].ToString().ToLower();
 }
 
 @model List<HoldEvent.Models.Entities.Event>
 
-<div class="row" style="display: flex; align-items: center; justify-content: center; margin-top:20px;">
-    <div class="col-md-6" style="display: flex; align-items: center; justify-content: center;">
-        <form method="get" asp-action="Index" class="d-flex" style="display: flex; align-items: center; justify-content: center;">
+<style>
+    .custom-toast {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 9999;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.2);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 4; /* Số dòng tối đa */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+@if (success == "true")
+{
+    <div id="toast-success" class="custom-toast bg-success text-white">
+        Mua vé thành công!
+        <button class="btn-close btn-close-white ms-2" onclick="closeToast('toast-success')"></button>
+    </div>
+}
+
+@if (noTicket == "true")
+{
+    <div id="toast-warning" class="custom-toast bg-warning text-dark">
+        Sự kiện hiện chưa có vé để mua!
+        <button class="btn-close ms-2" onclick="closeToast('toast-warning')"></button>
+    </div>
+}
+
+@if (String.IsNullOrWhiteSpace(UserId))
+{
+    <div class="d-flex justify-content-center align-items-center gap-3 my-4 flex-wrap">
+        <h1 class="display-4 fw-bold mb-0">Welcome you</h1>
+        <form method="get" asp-action="Index" class="d-flex">
             <input type="text" name="searchName" class="form-control" placeholder="Tìm kiếm theo tên" value="@ViewData["Search"]" />
-            <button type="submit" class="btn btn-primary" style="height:37px; margin-left: 0.5rem;">Search</button>
+            <button type="submit" class="btn btn-primary ms-2">Search</button>
         </form>
     </div>
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center gap-3 my-4 flex-wrap">
+        <h1 class="display-4 fw-bold mb-0">Welcome @FullName</h1>
+        <form method="get" asp-action="Index" class="d-flex">
+            <input type="text" name="searchName" class="form-control" placeholder="Tìm kiếm theo tên" value="@ViewData["Search"]" />
+            <button type="submit" class="btn btn-primary ms-2">Search</button>
+        </form>
+    </div>
+}
+
+
+<div id="eventCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-wrap="true">
+    <div class="carousel-inner">
+
+        @foreach (var e in Model.Take(10))
+        {
+            var isActive = (index == 0) ? "active" : "";
+            <div class="carousel-item @isActive">
+                <div class="d-flex align-items-center justify-content-center" style="height:500px;  background: url('@(e.Image != null ? $"data:image/png;base64,{Convert.ToBase64String(e.Image)}" : Url.Content("~/images/events-default.jpg"))') center/cover; position: relative; cursor: pointer;"
+                     onclick="location.href='@Url.Action("ViewDetailEvent", "User", new { EventID = e.EventId })'">
+
+                    <div style="position:absolute; inset:0; background-color:rgba(0,0,0,0.4); z-index:0;"></div>
+
+                    <div class="text-white text-center" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">
+                        <h1 class="fw-bold">@e.Name</h1>
+                        <a class="btn btn-primary mt-3" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@e.EventId">Get Ticket</a>
+                    </div>
+                </div>
+            </div>
+            index++;
+        }
+
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
 
 <div class="text-center">
@@ -35,27 +110,42 @@ else
 <div class="row">
     @foreach (var c in Model)
     {
-        <div class="col-md-3 mt-3">
-            <div class=" border rounded-3 shadow-sm h-100 d-flex flex-column" style="background-color:#f8f9fa;">
-                <img src="https://quangcaotruyenhinh.com/wp-content/uploads/2021/06/unnamed.jpg" />
-                <div class="text-center  p-3">
-                    <h2 class="h5 text-primary">@c.Name</h2>
+        <div class="col-md-6 mt-3">
+            <div class="border rounded-3 shadow-sm d-flex overflow-hidden" style="height: 240px;">
+                <div class="col-5">
+                    <img src="@(c.Image != null
+                         ? $"data:image/png;base64,{Convert.ToBase64String(c.Image)}"
+                         : Url.Content("~/images/events-default.jpg"))"
+                         class="img-fluid h-100 w-100 object-fit-cover"
+                         style="object-fit: cover;" alt="event image" />
                 </div>
 
-                <p class="mb-1 flex-grow-1 px-3">@c.Description</p>
-
-                <p class="mb-1"><strong>Start Time:</strong> @c.StartTime</p> 
-                <p class="mb-3"><strong>End Time:</strong> @c.EndTime</p> 
-
-                <div class="d-grid gap-2 mt-auto">
-                     <a class="btn btn-outline-primary btn-sm" asp-controller="User" asp-action="ViewDetailEvent" asp-route-EventID="@c.EventId">View Detail</a> 
-                     <a class="btn btn-primary btn-sm" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@c.EventId">Book Ticket</a> 
-                </div> 
+                <div class="col-7 d-flex flex-column justify-content-between p-3">
+                    <div>
+                        <h5 class="text-primary text-center fw-bold">@c.Name</h5>
+                        <p class="mb-1 text-truncate-2" style="font-size: 14px;">@c.Description</p>
+                        <p class="mb-1" style="font-size: 13px;"><strong>Start Time:</strong> @c.StartTime</p>
+                        <p class="mb-2" style="font-size: 13px;"><strong>End Time:</strong> @c.EndTime</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-outline-primary btn-sm" asp-controller="User" asp-action="ViewDetailEvent" asp-route-EventID="@c.EventId">View Detail</a>
+                        <a class="btn btn-primary btn-sm" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@c.EventId">Book Ticket</a>
+                    </div>
+                </div>
             </div>
         </div>
 
     }
 </div>
+
+<script>
+    setTimeout(function () {
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 3000);
+</script>
 
 
 

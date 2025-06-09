@@ -2,7 +2,9 @@
 {
     public class TicketUserViewModel
     {
+        public string TicketId { get; set; } = null!;
         public string NameEvent { get; set; } = null!;
+        public byte[]? Image { get; set; }
         public string NameVenue { get; set; } = null!;
         public int? Quantity { get; set; }
         public int? TicketType { get; set; }

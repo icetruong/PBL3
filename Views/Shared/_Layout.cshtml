@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - HoldEvent</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     @* <link rel="stylesheet" href="~/HoldEvent.styles.css" asp-append-version="true" /> *@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -67,7 +68,7 @@
         </div>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm  bg-white border-bottom box-shadow mb-3" style="padding:5px; display: flex; flex-direction: column; background-color:#084298 !important; color:white !important;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color:white !important;">HoldEvent</a>
+                <a class="navbar-brand" style="color:white !important;">HoldEvent</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -114,9 +115,6 @@
                             }
                             else
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link " asp-area="" asp-controller="User" asp-action="UserInformation" style="color:white !important;">Xem thông tin cá nhân</a>
-                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link " asp-area="" asp-controller="User" asp-action="Myticket" style="color:white !important;">Xem vé đã mua</a>
                                 </li>
@@ -188,36 +186,6 @@
 			                        z" id="id_102" style="fill: rgb(255, 255, 255);"></path>
                                                 </g>
                                             </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
-                                <g>
-                                            </g>
                                             </svg>
                                 <div style="display: flex; align-items: center; justify-content: center; margin-left:6px; color:white !important;">
                                     <a asp-area="" asp-controller="Account" asp-action="Login" style="color:white !important;">Sign in</a>
@@ -227,10 +195,24 @@
                             }
                             else
                             {
-                                <svg width="28" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>logout</title><path d="M21.71,11.3,19.46,9.05A1,1,0,0,0,18,10.46l.54.54H16.42V6a4,4,0,0,0-4-4H6A4,4,0,0,0,2,6V18a4,4,0,0,0,4,4h6.42a4,4,0,0,0,4-4V13h2.18l-.54.54a1,1,0,1,0,1.41,1.41l2.23-2.23A1,1,0,0,0,21.71,11.3ZM14.42,18a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V6A2,2,0,0,1,6,4h6.42a2,2,0,0,1,2,2v5H10.16a1,1,0,0,0,0,2h4.26Z" id="id_101" style="fill: rgb(255, 255, 255);"></path></svg>
-                                <div style="display: flex; align-items: center; justify-content: center; margin-left:4px; color:white !important;">
-                                    <a asp-area="" asp-controller="Account" asp-action="Logout" style="color:white !important;">Log out</a>
+                                <div class="dropdown">
+                                    <a class="btn btn-outline-light dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                                        <div class="user-avatar-wrapper me-2" style="position: relative; width: 40px; height: 40px;">
+                                            <img src="~/images/avatar-default.png" alt="avatar"
+                                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                                            <div style="position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; background-color: #28a745; border: 2px solid white; border-radius: 50%;"></div>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="UserInformation">Xem thông tin</a></li>
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="UserInformationEdit">Sửa thông tin</a></li>
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="ChangePassword">Đổi mật khẩu</a></li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">Đăng xuất</a></li>
+                                    </ul>
                                 </div>
+
                             }
                         }
                     </div>
@@ -249,13 +231,26 @@
         </div>
     </main>
 
-    <footer class="border-top footer text-muted mt-auto" style="background:#cfddf1; display: flex; align-items: center; justify-content: center; height:100px;">
-        <div class="container" style="display: flex; align-items: center; justify-content: center;">
-            &copy; 2025 - HoldEvent - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer-container">
+        <div class="footer-left">
+            <p><strong>Liên hệ:</strong></p>
+            <div class="contact-item">
+                <span class="icon">&#9742;</span>
+                <span class="info">SDT chăm sóc khách hàng: 123-456-789</span>
+            </div>
+            <div class="contact-item">
+                <span class="icon">&#9742;</span>
+                <span class="info">SDT liên hệ trực tiếp: 987-654-321</span>
+            </div>
+            <div class="contact-item">
+                <span class="clock">&#128340;</span>
+                <span class="info">Giờ hoạt động: 8:00 AM - 5:00 PM</span>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

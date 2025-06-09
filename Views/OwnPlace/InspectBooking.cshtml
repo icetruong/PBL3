@@ -13,21 +13,18 @@
     <input type="hidden" asp-for="BookingId" />
 
     <div class="mb-3">
-        <label asp-for="DateStart" class="form-label">Day - Time Start</label>
-        <input type="datetime-local" class="form-control" asp-for="DateStart" readonly />
-        <span asp-validation-for="DateStart" class="text-danger"></span>
+        <label class="form-label">Day - Time Start</label>
+        <input type="text" class="form-control" value="@Model.DateStart?.ToString("dd/MM/yyyy")" readonly />
     </div>
 
     <div class="mb-3">
-        <label asp-for="DateEnd" class="form-label">Day - Time End</label>
-        <input type="datetime-local" class="form-control" asp-for="DateEnd" readonly />
-        <span asp-validation-for="DateEnd" class="text-danger"></span>
+        <label class="form-label">Day - Time End</label>
+        <input type="text" class="form-control" value="@Model.DateEnd?.ToString("dd/MM/yyyy")" readonly />
     </div>
 
     <div class="mb-3">
-        <label asp-for="BookingDate" class="form-label">Day - Time Booking</label>
-        <input type="datetime-local" class="form-control" asp-for="BookingDate" readonly />
-        <span asp-validation-for="BookingDate" class="text-danger"></span>
+        <label class="form-label">Day - Time Booking</label>
+        <input type="text" class="form-control" value="@Model.BookingDate?.ToString("dd/MM/yyyy")" readonly />
     </div>
 
     <div class="mb-4">
@@ -39,7 +36,6 @@
     <div class="d-flex justify-content-between gap-2">
         <button type="submit" name="BookingStatus" value="Approved" class="btn btn-success flex-fill">Approve</button>
         <button type="submit" name="BookingStatus" value="Rejected" class="btn btn-warning flex-fill">Reject</button>
-        <button type="button" class="btn btn-danger flex-fill" onclick="location.href='@Url.Action("ListBooking", "OwnPlace")'">Cancel</button>
+        <button type="submit" formmethod="get" asp-area="" asp-controller="OwnPlace" asp-action="ListBooking" class="btn btn-danger flex-grow-1">Cancel</button>
     </div>
 </form>
-

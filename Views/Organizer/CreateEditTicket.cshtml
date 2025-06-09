@@ -70,8 +70,8 @@
     @Html.ValidationSummary()
 
     <div class="d-flex justify-content-between mt-4">
-        <button type="submit" class="btn btn-primary px-4">OK</button>
-        <button type="button" class="btn btn-danger px-4" onclick="location.href='@Url.Action("ListTicket", "Organizer", new { area = "" })'">Cancel</button>
+        <button type="submit" class="btn btn-primary flex-grow-1">OK</button>
+        <button type="submit" formmethod="get" asp-area="" asp-controller="Organizer" asp-action="ListTicket" class="btn btn-danger flex-grow-1">Cancel</button>
     </div>
 </form>
 

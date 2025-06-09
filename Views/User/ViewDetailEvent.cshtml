@@ -1,85 +1,77 @@
-﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
 @model HoldEvent.Models.EventTicketOrganizerVenueViewModel
 
+<div class="container py-5" style="max-width: 1100px; background:#fff; border: 1px solid #ddd; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+    <h1 class="display-5 fw-bold mb-4 text-center">Event: @Model.NameEvent</h1>
 
+    <div class="row gx-5">
+        <div class="col-md-5">
+            <div class="mb-4">
+                <img src="@(Model.Image != null
+                         ? $"data:image/png;base64,{Convert.ToBase64String(Model.Image)}"
+                         : Url.Content("~/images/events-default.jpg"))"
+                     alt="Event Image" class="img-fluid rounded shadow-sm" style="width:100%; height:auto;" />
+            </div>
 
-<div class="container py-5" style="max-width: 900px; background:#fff; border: 1px solid #ddd; border-radius:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-    <section class="mb-5 text-center">
-        <h1 class="display-5 fw-bold mb-3">Event: @Model.NameEvent</h1>
-    </section>
+            <div class="d-grid gap-2 mb-4">
+                <a class="btn btn-primary btn-lg" asp-area="" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@Model.EventId">Book Ticket</a>
+            </div>
 
-    <section class="mb-5">
-        <label class="form-label fw-semibold mb-2 d-block">Description</label>
-        <textarea class="form-control" rows="5" asp-for="Description" readonly style="resize:none;"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </section>
-
-    <section class="row mb-5 gx-4">
-        <div class="col-md-6">
-            <label class="form-label fw-semibold mb-2">Day - Time Start</label>
-            <input type="datetime-local" class="form-control" asp-for="StartTime" readonly />
-            <span asp-validation-for="StartTime" class="text-danger"></span>
+            <div>
+                <h4 class="fw-bold mb-2">Organizer: @Model.NameOrganizer</h4>
+                <p class="mb-1"><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+            </div>
         </div>
-        <div class="col-md-6">
-            <label class="form-label fw-semibold mb-2">Day - Time End</label>
-            <input type="datetime-local" class="form-control" asp-for="EndTime" readonly />
-            <span asp-validation-for="EndTime" class="text-danger"></span>
-        </div>
-    </section>
 
-    <section class="mb-5">
-        <h2 class="fw-bold mb-4 border-bottom pb-2">Tickets</h2>
+        <div class="col-md-7">
+            <div class="mb-4">
+                <h5 class="fw-semibold">Description</h5>
+                <p style="white-space: pre-wrap;">@Model.Description</p>
+            </div>
 
-        @foreach (var t in Model.tickets)
-        {
-            <div class="mb-4 p-3 border rounded" style="background:#fafafa;">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold mb-1">Ticket Type</label>
-                    <select class="form-select" disabled>
-                        <option selected="@(t.TicketType == 1)">Standard</option>
-                        <option selected="@(t.TicketType == 2)">Vip</option>
-                    </select>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="fw-semibold">Start Time</h5>
+                    <p>@Model.StartTime?.ToString("dd/MM/yyyy HH:mm")</p>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold mb-1">Price ($)</label>
-                    <input type="number" class="form-control" step="0.01" value="@t.Price" readonly />
-                </div>
-
-                <div>
-                    <label class="form-label fw-semibold mb-1">Remaining Quantity</label>
-                    <input type="number" class="form-control" value="@(t.TotalQuantity - t.SoldQuantity)" readonly />
+                <div class="col-md-6">
+                    <h5 class="fw-semibold">End Time</h5>
+                    <p>@Model.EndTime?.ToString("dd/MM/yyyy HH:mm")</p>
                 </div>
             </div>
-        }
-    </section>
 
-    <section class="mb-5">
-        <h2 class="fw-bold mb-3 text-center">Venue: @Model.NameVenue</h2>
-        <div class="mb-3">
-            <h6 class="fw-semibold mb-1">Description:</h6>
-            <p class="mb-0">@Model.DescriptionVenue</p>
-        </div>
-        <div>
-            <p class="mb-0"><strong>Address:</strong> @Model.Address</p>
-        </div>
-    </section>
+            <div>
+                <h4 class="fw-bold mb-3">Tickets</h4>
+                @foreach (var t in Model.tickets)
+                {
+                    <div class="mb-3 p-3 border rounded bg-light">
+                        <div class="mb-2 d-flex align-items-center">
+                            <h6 class="fw-semibold mb-0 me-1">Ticket Type:</h6>
+                            <span>@(t.TicketType == 1 ? "Standard" : "Vip")</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <h6 class="fw-semibold mb-0 me-1">Price: $</h6>
+                            <span>@t.Price?.ToString("0.00")</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h6 class="fw-semibold mb-0 me-1">Remaining Quantity:</h6>
+                            <span>@(t.TotalQuantity - t.SoldQuantity)</span>
+                        </div>
+                    </div>
 
-    <section class="mb-5">
-        <h2 class="fw-bold mb-3 text-center">Organizer: @Model.NameOrganizer</h2>
-        <div>
-            <p class="mb-1"><strong>Email:</strong> @Model.Email</p>
-            <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
-        </div>
-    </section>
 
-    <section class="d-flex justify-content-center gap-3">
-        <a class="btn btn-primary btn-lg px-4" asp-area="" asp-controller="User" asp-action="BookTicket" asp-route-EventID="@Model.EventId">Book Ticket</a>
-        <a class="btn btn-outline-secondary btn-lg px-4" asp-area="" asp-controller="Home" asp-action="Index">Cancel</a>
-    </section>
+                }
+            </div>
+
+            <div class="mb-5">
+                <h4 class="fw-bold mb-2">Venue: @Model.NameVenue</h4>
+                <p class="mb-1"><strong>Description:</strong> @Model.DescriptionVenue</p>
+                <p class="mb-1"><strong>Address:</strong> @Model.Address</p>
+            </div>
+        </div>
+    </div>
 </div>
-

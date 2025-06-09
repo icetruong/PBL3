@@ -23,6 +23,8 @@ public partial class Event
 
     public int? EventStatus { get; set; }
 
+    public byte[]? Image { get; set; }
+
     public virtual User? Organizer { get; set; }
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();

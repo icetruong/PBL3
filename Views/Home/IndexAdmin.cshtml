@@ -1,9 +1,56 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ Admin";
     var UserId = ViewData["UserId"] as string;
     var FullName = ViewData["FullName"] as string;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome @FullName</h1>
+@model HoldEvent.Models.AdminViewModel
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4 text-center">Trang hệ thống Admin @FullName</h2>
+
+    <div class="row text-white">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary shadow p-3">
+                <h5>Tổng người dùng</h5>
+                <h3>@Model.TotalUsers</h3>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success shadow p-3">
+                <h5>Tổng sự kiện</h5>
+                <h3>@Model.TotalEvents</h3>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-warning shadow p-3">
+                <h5>Vé đã bán</h5>
+                <h3>@Model.TotalTicketsSold</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4 class="mb-3">Sự kiện sắp diễn ra</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tên sự kiện</th>
+                    <th>Thời gian tổ chức</th>
+                    <th>Địa điểm</th>
+                    <th>Vé còn lại</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ev in Model.UpcomingEvents)
+                {
+                    <tr>
+                        <td>@ev.Name</td>
+                        <td>@ev.StartTime.ToString("dd/MM/yyyy HH:mm") -> @ev.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@ev.VenueName</td>
+                        <td>@(ev.TotalQuantity - ev.SoldQuantity)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

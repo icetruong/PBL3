@@ -12,8 +12,24 @@
 <div class="container my-4 d-flex justify-content-center">
     <div class="card shadow-sm" style="max-width: 520px; width: 100%;">
         <div class="card-body">
-            @* <h4 class="card-title mb-4 text-center">User Information</h4> *@
             <form asp-area="" asp-controller="user" asp-action="UserInformationPost">
+
+                <div class="mb-3 text-center">
+                    <img id="avatarPreview"
+                         src="@(Model.Avatar != null
+                         ? $"data:image/png;base64,{Convert.ToBase64String(Model.Avatar)}"
+                         : Url.Content("~/images/avatar-default.png"))" 
+                         alt="Avatar"
+                         style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;" />
+
+
+                    <div class="mt-2">
+                        <label class="form-label">
+                            Avatar
+                        </label>
+                    </div>
+                </div>
+
                 <input type="hidden" asp-for="UserId" />
 
                 <div class="mb-3">
@@ -55,11 +71,8 @@
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary flex-grow-1">OK</button>
-                    <button type="submit" formmethod="get" asp-controller="user" asp-action="UserInformationEdit" class="btn btn-secondary flex-grow-1">Edit</button>
-                    <button type="submit" formmethod="get" asp-controller="user" asp-action="ChangePassword" class="btn btn-secondary flex-grow-1">Change Password</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-

@@ -21,5 +21,7 @@ namespace HoldEvent.Models
         public bool? IsPublic { get; set; }
 
         public int? EventStatus { get; set; }
+
+        public byte[]? Image { get; set; }
     }
 }

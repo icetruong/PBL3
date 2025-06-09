@@ -1,0 +1,77 @@
+﻿
+@{
+    ViewData["Title"] = "Chi tiết vé";
+    string base64Image = Model.Image != null ? $"data:image/png;base64,{Convert.ToBase64String(Model.Image)}" : Url.Content("~/images/events-default.jpg");
+    string qrCodeUrl = $"https://yourdomain.com/Ticket/ConfirmScan/{Model.TicketId}";
+}
+@model HoldEvent.Models.TicketUserViewModel
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Chi tiết vé</h2>
+
+    <form method="post" asp-action="UseTicket" asp-controller="User">
+        <input type="hidden" asp-for="TicketId" />
+
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <img src="@base64Image" class="img-fluid rounded border mb-3" alt="Ảnh sự kiện" />
+
+                <div id="qrcode" class="d-flex justify-content-center my-3"></div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3" >
+                    <label class="form-label fw-bold">Tên sự kiện:</label>
+                    <p class="form-control">@Model.NameEvent</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Địa điểm:</label>
+                    <p class="form-control">@Model.NameVenue</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Địa chỉ:</label>
+                    <p class="form-control">@Model.Address</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Loại vé:</label>
+                    @if(Model.TicketType == 1)
+                    {
+                        <p class="form-control">Vé loại thường</p>
+                    }
+                    else
+                    {
+                        <p class="form-control">Vé loại Vip</p>
+                    }
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số lượng:</label>
+                    <p class="form-control">@Model.Quantity</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Giá vé:</label>
+                    <p class="form-control">@Model.Price?.ToString("N0") VNĐ</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Thời gian bắt đầu:</label>
+                    <p class="form-control">@Model.StartTime?.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Thời gian kết thúc:</label>
+                    <p class="form-control">@Model.EndTime?.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+            </div>
+
+            <div class="col-12 mt-4 d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-success">Sử dụng vé</button>
+                <a class="btn btn-secondary" asp-action="Myticket" asp-controller="User">Thoát</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        new QRCode(document.getElementById("qrcode"), "@qrCodeUrl");
+    </script>
+}

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HoldEvent.Controllers
 {
@@ -29,16 +30,16 @@ namespace HoldEvent.Controllers
             if (string.IsNullOrWhiteSpace(model.Search) && model.Select != "name")
             {
                 ModelState.AddModelError("Search", "Search không được để trống");
-                model.Venues = await _DbContext.Venues.Where(p => !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                model.Venues = await _DbContext.Venues.ToListAsync();
                 return View(model);
             }
             switch(model.Select)
             {
                 case "name":
                     if (String.IsNullOrWhiteSpace(model.Search))
-                        model.Venues = await _DbContext.Venues.Where(p => !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                        model.Venues = await _DbContext.Venues.ToListAsync();
                     else
-                        model.Venues = await _DbContext.Venues.Where(p => p.Name.StartsWith(model.Search) && !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                        model.Venues = await _DbContext.Venues.Where(p => p.Name.StartsWith(model.Search)).ToListAsync();
                     break;
                 case "capacity":
                     foreach (char c in model.Search)
@@ -46,11 +47,11 @@ namespace HoldEvent.Controllers
                         if (!char.IsDigit(c))
                         {
                             ModelState.AddModelError("Search", "Select = capacity thì không được nhập chữ");
-                            model.Venues = await _DbContext.Venues.Where(p => !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                            model.Venues = await _DbContext.Venues.ToListAsync();
                             return View(model);
                         }      
                     }
-                    model.Venues = await _DbContext.Venues.Where(p => p.Capacity == Convert.ToInt32(model.Search) && !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                    model.Venues = await _DbContext.Venues.Where(p => p.Capacity == Convert.ToInt32(model.Search)).ToListAsync();
                     break;
                 case "price":
                     foreach (char c in model.Search)
@@ -60,12 +61,12 @@ namespace HoldEvent.Controllers
                             if (c != '.')
                             {
                                 ModelState.AddModelError("Search", "Select = price thì không được nhập chữ");
-                                model.Venues = await _DbContext.Venues.Where(p => !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                                model.Venues = await _DbContext.Venues.ToListAsync();
                                 return View(model);
                             }
                         }
                     }
-                    model.Venues = await _DbContext.Venues.Where(p => p.Price <= Convert.ToDecimal(model.Search) && !_DbContext.Bookings.Any(b => b.VenueId == p.VenueId)).ToListAsync();
+                    model.Venues = await _DbContext.Venues.Where(p => p.Price <= Convert.ToDecimal(model.Search)).ToListAsync();
                     break;
             }
             return View(model);
@@ -159,7 +160,7 @@ namespace HoldEvent.Controllers
                 {
                     model.PaymentId = paymentID;
                     return View(model);
-                }    
+                }
             }
             else
             {
@@ -168,6 +169,17 @@ namespace HoldEvent.Controllers
                 if (!ModelState.IsValid)
                     return View(model);
             }
+
+            if (model.Method == 2 && model.PaymentId == null)
+            {
+                model.PricePayment = model.Deposit;
+                model.PaymentId = paymentID;
+                ModelState.Clear();
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
 
             var payment = new Payment
             {
@@ -200,11 +212,12 @@ namespace HoldEvent.Controllers
         {
             var Role = HttpContext.Session.GetString("Role");
             ViewData["Role"] = Role;
+            var OrganizerID = HttpContext.Session.GetString("UserId");
             List<Event> le;
             if (searchName == null)
-                le = await _DbContext.Events.ToListAsync();
+                le = await _DbContext.Events.Where(e => e.OrganizerId == OrganizerID && e.EventStatus != 3).ToListAsync();
             else
-                le = await _DbContext.Events.Where(e => e.Name == searchName).ToListAsync();
+                le = await _DbContext.Events.Where(e => e.Name.StartsWith(searchName) && e.OrganizerId == OrganizerID && e.EventStatus != 3).ToListAsync();
 
             ViewData["Search"] = searchName;
             return View(le);
@@ -217,7 +230,7 @@ namespace HoldEvent.Controllers
             
             var Role = HttpContext.Session.GetString("Role");
             ViewData["Role"] = Role;
-            var Venues = await _DbContext.Bookings.Where(p => p.OrganizerId == OrganizerID && p.BookingStatus == 1).Select(p=> p.Venue).ToListAsync();    
+            var Venues = await _DbContext.Bookings.Where(p => p.OrganizerId == OrganizerID && p.BookingStatus == 1).Select(p=> p.Venue).Distinct().ToListAsync();    
             // Create
             if (EventID == null)
             {
@@ -231,8 +244,8 @@ namespace HoldEvent.Controllers
                     EndTime = null,
                     IsPublic = true,
                     EventStatus = null,
-                    VenueId = null
-                    
+                    VenueId = null,
+                    Image = null
                 });
             }
             // Edit
@@ -249,37 +262,50 @@ namespace HoldEvent.Controllers
                     EndTime = e.EndTime,
                     IsPublic = e.IsPublic,
                     EventStatus = e.EventStatus,
-                    VenueId = e.VenueId
-                    
+                    VenueId = e.VenueId,
+                    Image = e.Image
                 });
             }
                 
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEditEvent(EventBookingViewModel model)
+        public async Task<IActionResult> CreateEditEvent(EventBookingViewModel model, IFormFile ImageFile)
         {
             var OrganizerID = HttpContext.Session.GetString("UserId");
             var Role = HttpContext.Session.GetString("Role");
             ViewData["Role"] = Role;
             if (model.StartTime == null)
-                ModelState.AddModelError("DateStart", "Yeu cau nhap Date Start");
+                ModelState.AddModelError("StartTime", "Yeu cau nhap Date Start");
             if (model.EndTime == null)
-                ModelState.AddModelError("DateEnd", "Yeu cau nhap Date End");
+                ModelState.AddModelError("EndTime", "Yeu cau nhap Date End");
             if (model.EndTime < model.StartTime && model.StartTime > DateTime.Now)
-                ModelState.AddModelError("DateEnd", "Loi thoi gian khong hop le");
-            var booking = await _DbContext.Bookings.SingleOrDefaultAsync(p => p.VenueId == model.VenueId && p.OrganizerId == OrganizerID);
-            if (!(model.StartTime > booking.DateStart && model.EndTime < booking.DateEnd))
-                ModelState.AddModelError("DateEnd", "Loi thoi gian nam ngoai khoang thoi gian booking");
+                ModelState.AddModelError("EndTime", "Loi thoi gian khong hop le");
+            var bookings = await _DbContext.Bookings.Where(p => p.VenueId == model.VenueId && p.OrganizerId == OrganizerID).ToListAsync();
+            bool check = false;
+            foreach(var booking in bookings)
+            {
+                if ((model.StartTime > booking.DateStart && model.EndTime < booking.DateEnd))
+                {
+                    check = true;
+                    break;
+                }
+            }    
+            if(!check)
+                ModelState.AddModelError("EndTime", "Loi thoi gian nam ngoai khoang thoi gian booking");
             if (model.VenueId == null)
                 ModelState.AddModelError("VenueId", "Không chọn địa điểm và không có địa điểm để chọn");
-            
+            if(ImageFile == null || ImageFile.Length == 0)
+                ModelState.AddModelError("Image", "Vui lòng chọn ảnh cho sự kiện.");
+
             if (!ModelState.IsValid)
             {
                 var Venues = await _DbContext.Bookings.Where(p => p.OrganizerId == OrganizerID && p.BookingStatus == 1).Select(p => p.Venue).ToListAsync();
                 model.Venues = Venues;
                 return View(model);
-            }    
+            }
+            var ms = new MemoryStream();
+            await ImageFile.CopyToAsync(ms);
             // Create
             if (model.EventStatus == null)
             {
@@ -294,6 +320,7 @@ namespace HoldEvent.Controllers
                     EndTime = model.EndTime,
                     IsPublic = model.IsPublic,
                     EventStatus = -1,
+                    Image = ms.ToArray()
                 };
                 await _DbContext.Events.AddAsync(e);
                 await _DbContext.SaveChangesAsync();
@@ -309,6 +336,7 @@ namespace HoldEvent.Controllers
                 original.EndTime = model.EndTime;
                 original.IsPublic = model.IsPublic;
                 original.EventStatus = model.EventStatus;
+                original.Image = ms.ToArray();
 
                 await _DbContext.SaveChangesAsync();
             }
@@ -319,10 +347,11 @@ namespace HoldEvent.Controllers
         [HttpGet]
         public async Task<IActionResult> ViewDetailMyEvent(String EventID)
         {
-            
+            var Role = HttpContext.Session.GetString("Role");
+            ViewData["Role"] = Role;
             var Event = await _DbContext.Events.SingleOrDefaultAsync(p => p.EventId == EventID);
             var Venue = await _DbContext.Venues.SingleOrDefaultAsync(p => p.VenueId == Event.VenueId);
-            var Booking = await _DbContext.Bookings.SingleOrDefaultAsync(p => p.VenueId == Venue.VenueId && p.OrganizerId == Event.OrganizerId);
+            var Booking = await _DbContext.Bookings.SingleOrDefaultAsync(p => p.VenueId == Venue.VenueId && p.OrganizerId == Event.OrganizerId && (Event.StartTime > p.DateStart && Event.EndTime < p.DateEnd));
             var Payment = await _DbContext.Payments.SingleOrDefaultAsync(p => p.PaymentId == Booking.PaymentId);
 
             return View(new EventTicketVenueViewModel
@@ -336,15 +365,16 @@ namespace HoldEvent.Controllers
                 EventStatus = Event.EventStatus,
                 NamePlace = Venue.Name,
                 PricePlace = Payment.Price,
+                Image = Event.Image
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteEvent(String EventID)
+        public async Task<IActionResult> CancelEvent(String EventID)
         {
             var Event = await _DbContext.Events.SingleOrDefaultAsync(e => e.EventId == EventID);
 
-            _DbContext.Events.Remove(Event);
+            Event.EventStatus = 3;
             await _DbContext.SaveChangesAsync();
 
             return RedirectToAction("ListEvent", "Organizer");
@@ -355,10 +385,10 @@ namespace HoldEvent.Controllers
         {
             var Role = HttpContext.Session.GetString("Role");
             ViewData["Role"] = Role;
+            var OrganizerID = HttpContext.Session.GetString("UserId");
 
-            
             List<ListTicketViewModel> lt = new List<ListTicketViewModel>();
-            var tickets = await _DbContext.Tickets.ToListAsync();
+            var tickets = await _DbContext.Tickets.Where(t => _DbContext.Events.Any(e => e.EventId == t.EventId && e.OrganizerId == OrganizerID)).ToListAsync();
 
             if (searchName != null)
             {
@@ -403,7 +433,7 @@ namespace HoldEvent.Controllers
             var OrganizerID = HttpContext.Session.GetString("UserId");
             var Role = HttpContext.Session.GetString("Role");
             ViewData["Role"] = Role;
-            var le = await _DbContext.Events.Where(p => p.OrganizerId == OrganizerID).ToListAsync();
+            var le = await _DbContext.Events.Where(p => p.OrganizerId == OrganizerID && p.EventStatus == 1).ToListAsync();
             // Create
             if (TicketID == null)
             {
@@ -416,7 +446,6 @@ namespace HoldEvent.Controllers
                     Price = null,
                     TotalQuantity = null,
                     Events = le
-                    
                 });
             }
             // Edit
@@ -432,7 +461,6 @@ namespace HoldEvent.Controllers
                     Price = t.Price,
                     TotalQuantity = t.TotalQuantity,
                     Events = le
-
                 });
             }    
         }
@@ -446,7 +474,7 @@ namespace HoldEvent.Controllers
 
            
             if(model.EventId == null)
-                ModelState.AddModelError("EventId", "Không chọn hoặc không có sự kiện. Nếu không có sự kiện vui lòng tạo thêm sự kiện");
+                ModelState.AddModelError("EventId", "Không chọn hoặc không có sự kiện. Nếu không có sự kiện vui lòng tạo thêm sự kiện và chờ duyệt");
             if (model.TotalQuantity <= 0)
                 ModelState.AddModelError("TotalQuantity", "Total Quantity lon hon 0");
             if (model.Price <= 0)
@@ -503,9 +531,11 @@ namespace HoldEvent.Controllers
         public async Task<IActionResult> DeleteTicket(String TicketID)
         {
             var ticket = await _DbContext.Tickets.SingleOrDefaultAsync(p => p.TicketId == TicketID);
-
-            _DbContext.Tickets.Remove(ticket);
-            await _DbContext.SaveChangesAsync();
+            if(ticket.SoldQuantity == 0)
+            {
+                _DbContext.Tickets.Remove(ticket);
+                await _DbContext.SaveChangesAsync();
+            }
 
             return RedirectToAction("ListTicket", "Organizer");
         }

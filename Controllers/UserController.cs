@@ -82,7 +82,7 @@ namespace HoldEvent.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserInformationEdit(User userModel)
+        public async Task<IActionResult> UserInformationEdit(User userModel, IFormFile AvatarFile)
         {
             var UserID = HttpContext.Session.GetString("UserId");
             var Role = HttpContext.Session.GetString("Role");
@@ -109,6 +109,7 @@ namespace HoldEvent.Controllers
             {
 
                 var user = await _DbContext.Users.SingleOrDefaultAsync(p=> p.UserId == userModel.UserId);
+               
                 if (user != null)
                 {
                     user.FullName = userModel.FullName;
@@ -117,6 +118,12 @@ namespace HoldEvent.Controllers
                     user.Address = userModel.Address;
                     user.DayOfBirth = userModel.DayOfBirth;
                     user.Gender = userModel.Gender;
+                    if (AvatarFile != null && AvatarFile.Length > 0)
+                    {
+                        var ms = new MemoryStream();
+                        await AvatarFile.CopyToAsync(ms);
+                        user.Avatar = ms.ToArray();
+                    }
 
                     await _DbContext.SaveChangesAsync();
                 }
@@ -173,7 +180,7 @@ namespace HoldEvent.Controllers
             await _DbContext.Feedbacks.AddAsync(feedback);
             await _DbContext.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("ListFeedback", "User");
         }
         [HttpGet]
         public async Task<IActionResult> ListFeedback()
@@ -247,7 +254,8 @@ namespace HoldEvent.Controllers
                     Address = v.Address,
                     Email = o.Email,
                     PhoneNumber = o.PhoneNumber,
-                    tickets = tickets
+                    tickets = tickets,
+                    Image = e.Image
                 });
             return RedirectToAction("Index", "Home");
         }
@@ -261,15 +269,17 @@ namespace HoldEvent.Controllers
             ViewData["Role"] = Role;
 
             var e = await _DbContext.Events.SingleOrDefaultAsync(p => p.EventId == EventID);
-
-            return View(new TicketTransactionViewModel
-            {
-                TicketId = null,
-                EventId = e.EventId,
-                NameEvent = e.Name,
-                tickets = await _DbContext.Tickets.Where(p => p.EventId == e.EventId).ToListAsync(),
-                Quantity = 1,
-            });
+            var lt = await _DbContext.Tickets.Where(p => p.EventId == e.EventId).ToListAsync();
+            if(lt != null)
+                return View(new TicketTransactionViewModel
+                {
+                    TicketId = null,
+                    EventId = e.EventId,
+                    NameEvent = e.Name,
+                    tickets = lt,
+                    Quantity = 1,
+                });
+            return RedirectToAction("Index", "Home", new { novalue = true });
         }
         [HttpPost]
         public async Task<IActionResult> BookTicket(TicketTransactionViewModel model)
@@ -323,7 +333,7 @@ namespace HoldEvent.Controllers
             ViewData["Role"] = Role;
             var UserID = HttpContext.Session.GetString("UserId");
 
-            var paymentID = await getVaildIDByPayment();
+            String paymentID = await getVaildIDByPayment();
             if (model.PricePayment == null)
             {
                 if (model.Method == 1 && model.PaymentId == null)
@@ -340,42 +350,67 @@ namespace HoldEvent.Controllers
                     return View(model);
             }
 
-            var payment = new Payment
+            if (model.Method == 2 && model.PaymentId == null)
             {
-                PaymentId = paymentID,
-                Method = model.Method,
-                PaymentStatus = 1,
-                Price = model.TotalPrice
-            };
+                model.PricePayment = model.TotalPrice;
+                model.PaymentId = paymentID;
+                ModelState.Clear();
+                return View(model);
+            }
 
-            var transaction = new Transaction
-            {
-                TransactionId = await getVaildIDByTransaction(),
-                TicketId = model.TicketId,
-                PaymentId = paymentID,
-                UserId = UserID,
-                Quantity = model.Quantity,
-                TransactionDate = DateTime.Now
-            };
+            if (!ModelState.IsValid)
+                return View(model);
 
-            var tou = new TicketOfUser
+
+
+            var oldTransaction = await _DbContext.Transactions.SingleOrDefaultAsync(t => t.TicketId == model.TicketId && t.UserId == UserID);
+            if (oldTransaction == null)
             {
-                UserId = UserID,
-                TicketId = model.TicketId,
-                TransactionId = transaction.TransactionId,
-                Status = 1,
-            };
+                var payment = new Payment
+                {
+                    PaymentId = paymentID,
+                    Method = model.Method,
+                    PaymentStatus = 1,
+                    Price = model.TotalPrice
+                };
+
+                var transaction = new Transaction
+                {
+                    TransactionId = await getVaildIDByTransaction(),
+                    TicketId = model.TicketId,
+                    PaymentId = paymentID,
+                    UserId = UserID,
+                    Quantity = model.Quantity,
+                    TransactionDate = DateTime.Now
+                };
+                var tou = new TicketOfUser
+                {
+                    UserId = UserID,
+                    TicketId = model.TicketId,
+                    TransactionId = transaction.TransactionId,
+                    Status = 1,
+                };
+                await _DbContext.Payments.AddAsync(payment);
+                await _DbContext.Transactions.AddAsync(transaction);
+                await _DbContext.TicketOfUsers.AddAsync(tou);
+            }
+            else
+            {
+                var oldPayment = await _DbContext.Payments.SingleOrDefaultAsync(p => p.PaymentId == oldTransaction.PaymentId);
+
+                oldPayment.Price += model.TotalPrice;
+                oldTransaction.Quantity += model.Quantity;
+            }
+
 
             var ticket = await _DbContext.Tickets.SingleOrDefaultAsync(p => p.TicketId == model.TicketId);
             ticket.SoldQuantity += model.Quantity;
 
 
-            await _DbContext.Payments.AddAsync(payment);
-            await _DbContext.Transactions.AddAsync(transaction);
-            await _DbContext.TicketOfUsers.AddAsync(tou);
+
             await _DbContext.SaveChangesAsync();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { success = true });
         }
 
         [HttpGet]
@@ -397,8 +432,14 @@ namespace HoldEvent.Controllers
                     var e = await _DbContext.Events.SingleOrDefaultAsync(p => p.EventId == ticket.EventId);
                     var venue = await _DbContext.Venues.SingleOrDefaultAsync(p => p.VenueId == e.VenueId);
                     var ticketOfUser = await _DbContext.TicketOfUsers.SingleOrDefaultAsync(p => p.TransactionId == t.TransactionId);
+                    if(e.EventStatus == 2 && ticketOfUser.Status != 0)
+                    {
+                        ticketOfUser.Status = -1;
+                        await _DbContext.SaveChangesAsync();
+                    }    
                     ltu.Add(new TicketUserViewModel
                     {
+                        TicketId = ticket.TicketId,
                         NameEvent = e.Name,
                         NameVenue = venue.Name,
                         Quantity = t.Quantity,
@@ -426,6 +467,7 @@ namespace HoldEvent.Controllers
                     var ticketOfUser = await _DbContext.TicketOfUsers.SingleOrDefaultAsync(p => p.TransactionId == t.TransactionId);
                     ltu.Add(new TicketUserViewModel
                     {
+                        TicketId = ticket.TicketId,
                         NameEvent = e.Name,
                         NameVenue = venue.Name,
                         Quantity = t.Quantity,
@@ -439,6 +481,48 @@ namespace HoldEvent.Controllers
                 }
             }
             return View(ltu);
+        }
+        [HttpGet]
+        public async Task<IActionResult> UseTicket(String TicketID)
+        {
+            var Role = HttpContext.Session.GetString("Role");
+            ViewData["Role"] = Role;
+            var UserID = HttpContext.Session.GetString("UserId");
+            var transaction = await _DbContext.Transactions.SingleOrDefaultAsync(t => t.TicketId == TicketID && t.UserId == UserID);
+            var payment = await _DbContext.Payments.SingleOrDefaultAsync(p => p.PaymentId == transaction.PaymentId);
+            var ticket = await _DbContext.Tickets.SingleOrDefaultAsync(p => p.TicketId == TicketID);
+            var e = await _DbContext.Events.SingleOrDefaultAsync(p => p.EventId == ticket.EventId);
+            var venue = await _DbContext.Venues.SingleOrDefaultAsync(p => p.VenueId == e.VenueId);
+            var ticketOfUser = await _DbContext.TicketOfUsers.SingleOrDefaultAsync(p => p.TransactionId == transaction.TransactionId);
+
+            return View(new TicketUserViewModel
+            {
+                TicketId = ticket.TicketId,
+                NameEvent = e.Name,
+                NameVenue = venue.Name,
+                Quantity = transaction.Quantity,
+                TicketType = ticket.TicketType,
+                Address = venue.Address,
+                Status = ticketOfUser.Status,
+                Price = payment.Price,
+                StartTime = e.StartTime,
+                EndTime = e.EndTime,
+                Image = e.Image
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UseTicket(TicketUserViewModel model)
+        {
+            var Role = HttpContext.Session.GetString("Role");
+            ViewData["Role"] = Role;
+            var UserID = HttpContext.Session.GetString("UserId");
+            var ticketOfUser = await _DbContext.TicketOfUsers.SingleOrDefaultAsync(t => t.TicketId == model.TicketId && t.UserId == UserID);
+
+            ticketOfUser.Status = 0;
+            await _DbContext.SaveChangesAsync();
+
+            return RedirectToAction("Myticket", "User");
         }
 
         private async Task<String> getVaildIDByFeedback()
